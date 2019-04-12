@@ -23,4 +23,4 @@ For more, check out the [Contributing Guide](CONTRIBUTING.md).
 
 ## License
 
-[ISC](LICENSE) © 2019 cchantep <cchantep@no-reply.org> (https://github.com/zengularity/probot-pr-naming)
+[ISC](LICENSE) © 2019 Zengularity (https://github.com/zengularity/probot-pr-naming)
