@@ -1,0 +1,27 @@
+default_events:
+- pull_request
+
+default_permissions:
+  # Pull requests and related comments, assignees, labels, milestones, and merges.
+  # https://developer.github.com/v3/apps/permissions/#permission-on-pull-requests
+  pull_requests: read
+
+  # Commit statuses.
+  # https://developer.github.com/v3/apps/permissions/#permission-on-statuses
+  statuses: write
+
+  contents: read
+
+
+# The name of the GitHub App. Defaults to the name specified in package.json
+name: pr-naming
+
+# The homepage of your GitHub App.
+url: https://github.com/zengularity/probot-pr-naming
+
+# A description of the GitHub App.
+description: Probot application that check the naming of pull requests
+
+# Set to true when your GitHub App is available to the public or false when it is only accessible to the owner of the app.
+# Default: true
+# public: false
