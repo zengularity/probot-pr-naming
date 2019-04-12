@@ -10,28 +10,30 @@ import dc from './resources/pr-naming.json'
 
 // --- Model
 
-export const Expression = t.union([ t.string, t.array(t.string) ])
+export const Expression = t.union([t.string, t.array(t.string)])
 
-export const MustMatchOnly = t.exact(t.type({
-  mustMatch: Expression,
-  mustNotMatch: t.undefined
-}))
+export const MustMatchOnly = t.exact(
+  t.type({
+    mustMatch: Expression,
+    mustNotMatch: t.undefined,
+  }),
+)
 
-export const MustNotMatchOnly = t.exact(t.type({
-  mustMatch: t.undefined,
-  mustNotMatch: Expression
-}))
+export const MustNotMatchOnly = t.exact(
+  t.type({
+    mustMatch: t.undefined,
+    mustNotMatch: Expression,
+  }),
+)
 
-export const FullyQualified = t.exact(t.type({
-  mustMatch: Expression,
-  mustNotMatch: Expression
-}))
+export const FullyQualified = t.exact(
+  t.type({
+    mustMatch: Expression,
+    mustNotMatch: Expression,
+  }),
+)
 
-export const Config = t.union([
-  MustMatchOnly,
-  MustNotMatchOnly,
-  FullyQualified
-])
+export const Config = t.union([MustMatchOnly, MustNotMatchOnly, FullyQualified])
 
 export type IConfig = t.TypeOf<typeof Config>
 
@@ -65,7 +67,8 @@ function getFromJson(bot: Context, path: string, ref: string): Promise<{}> {
 export function getConfig(bot: Context, ref: string): Promise<IConfig> {
   return getFromJson(bot, '.github/pr-naming.json', ref).then(
     json => util.fromEither(Config.decode(json)),
-    _err => DefaultConfig)
+    _err => DefaultConfig,
+  )
 }
 
 // ---
@@ -74,9 +77,11 @@ export function getConfig(bot: Context, ref: string): Promise<IConfig> {
  * @return none if `input` matches the `config`, or some error message
  */
 export function match(input: string, config: IConfig): Option<string> {
-  const mustMatch: ReadonlyArray<string> = (!config.mustMatch) ? []
-    : ((config.mustMatch instanceof Array)
-       ? (config.mustMatch as Array<string>) : [ config.mustMatch.toString() ])
+  const mustMatch: ReadonlyArray<string> = !config.mustMatch
+    ? []
+    : config.mustMatch instanceof Array
+    ? (config.mustMatch as Array<string>)
+    : [config.mustMatch.toString()]
 
   const matchIdx = mustMatch.findIndex(re => !!input.match(re))
 
@@ -86,14 +91,13 @@ export function match(input: string, config: IConfig): Option<string> {
 
   // ---
 
-  const mustNotMatch: ReadonlyArray<string> = (!config.mustNotMatch) ? []
-    : ((config.mustNotMatch instanceof Array)
-       ? (config.mustNotMatch as Array<string>)
-       : [ config.mustNotMatch.toString() ])
+  const mustNotMatch: ReadonlyArray<string> = !config.mustNotMatch
+    ? []
+    : config.mustNotMatch instanceof Array
+    ? (config.mustNotMatch as Array<string>)
+    : [config.mustNotMatch.toString()]
 
   const notIdx = mustNotMatch.findIndex(re => !!input.match(re))
-  
-  return (notIdx < 0) ? none
-    : some(`must not match ${mustNotMatch.join(', ')}: ${input}`)
-}
 
+  return notIdx < 0 ? none : some(`must not match ${mustNotMatch.join(', ')}: ${input}`)
+}
