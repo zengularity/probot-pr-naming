@@ -6,39 +6,43 @@ import { none, some, Option } from 'fp-ts/lib/Option'
 import { fromEither } from './util'
 import * as c from './config'
 
-const PullRequestEvent = t.exact(t.type({
-  pull_request: t.exact(t.type({
-    number: t.number,
-    title: t.string,
-    base: t.exact(t.type({
-      ref: t.string
-    })),
-    head: t.exact(t.type({
-      sha: t.string
-    }))
-  }))
-}))
+const PullRequestEvent = t.exact(
+  t.type({
+    pull_request: t.exact(
+      t.type({
+        number: t.number,
+        title: t.string,
+        base: t.exact(
+          t.type({
+            ref: t.string,
+          }),
+        ),
+        head: t.exact(
+          t.type({
+            sha: t.string,
+          }),
+        ),
+      }),
+    ),
+  }),
+)
 
 const StatusContext = 'pr-naming'
 
 type CommitState = 'success' | 'error' | 'failure' | 'pending'
 
 type StatusData = {
-  state: CommitState,
+  state: CommitState
   description: string
 }
 
 const successData: StatusData = {
   state: 'success',
-  description: 'Everything is alright' // TODO: Config
+  description: 'Everything is alright', // TODO: Config
 }
 
 export = (app: Application) => {
-  app.on([
-    'pull_request.opened',
-    'pull_request.edited',
-    'pull_request.synchronize'
-  ], async context => {
+  app.on(['pull_request.opened', 'pull_request.edited', 'pull_request.synchronize'], async context => {
     const event = await fromEither(PullRequestEvent.decode(context.payload))
     const pr = event.pull_request
 
@@ -56,7 +60,7 @@ export = (app: Application) => {
 
     const data: StatusData = m.fold(successData, msg => {
       context.log(`Title of pull request #${pr.number} doesn't match configuration: ${msg}`, config)
-      
+
       return { state: 'error', description: msg }
     })
 
@@ -66,11 +70,7 @@ export = (app: Application) => {
 
 // --- GitHub integration
 
-function toggleState(
-  bot: Context,
-  sha: string,
-  data: StatusData
-): Promise<void> {
+function toggleState(bot: Context, sha: string, data: StatusData): Promise<void> {
   return getCommitState(bot, sha, StatusContext).then(state => {
     const alreadySet = state.filter(s => s == data.state)
 
@@ -82,7 +82,7 @@ function toggleState(
           bot.repo({
             sha: sha,
             context: StatusContext,
-            ...data
+            ...data,
           }),
         )
         .then(_r => Promise.resolve())
