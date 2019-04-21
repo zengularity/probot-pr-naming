@@ -33,14 +33,14 @@ type CommitState = 'success' | 'error' | 'failure' | 'pending'
 
 type StatusData = {
   state: CommitState
-  description: string,
+  description: string
   targetUrl: Option<string>
 }
 
 const successData: StatusData = {
   state: 'success',
   description: 'Everything is alright', // TODO: Config
-  targetUrl: none
+  targetUrl: none,
 }
 
 export = (app: Application) => {
@@ -69,7 +69,7 @@ export = (app: Application) => {
       return {
         state: 'error',
         description: msg.substring(0, 140),
-        targetUrl: some(htmlUrl)
+        targetUrl: some(htmlUrl),
       }
     })
 
