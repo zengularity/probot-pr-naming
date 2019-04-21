@@ -31,6 +31,11 @@ a file named [`pr-naming.json`](./src/resources/pr-naming.json) can be defined o
 - `mustMatch`: one or more [regular expression](https://en.wikipedia.org/wiki/Regular_expression)
 - `mustNotMatch`: one or more [regular expression](https://en.wikipedia.org/wiki/Regular_expression)
 
+## Alternatives
+
+- [probot-app-pr-title](https://github.com/uber-workflow/probot-app-pr-title)
+- [li-boxuan/Regex-Checker](https://github.com/li-boxuan/Regex-Checker)
+
 ## Contributing
 
 If you have suggestions for how pr-naming could be improved, or want to report a bug, open an issue! We'd love all and any contributions.

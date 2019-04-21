@@ -86,7 +86,7 @@ export function match(input: string, config: IConfig): Option<string> {
   const matchIdx = mustMatch.findIndex(re => !!input.match(re))
 
   if (matchIdx < 0) {
-    return some(`must match ${mustMatch.join(', ')}: ${input}`)
+    return some(`must match ${mustMatch.join(', ')}`)
   }
 
   // ---
@@ -99,5 +99,5 @@ export function match(input: string, config: IConfig): Option<string> {
 
   const notIdx = mustNotMatch.findIndex(re => !!input.match(re))
 
-  return notIdx < 0 ? none : some(`must not match ${mustNotMatch.join(', ')}: ${input}`)
+  return notIdx < 0 ? none : some(`must not match ${mustNotMatch.join(', ')}`)
 }

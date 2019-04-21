@@ -33,12 +33,14 @@ type CommitState = 'success' | 'error' | 'failure' | 'pending'
 
 type StatusData = {
   state: CommitState
-  description: string
+  description: string,
+  targetUrl: Option<string>
 }
 
 const successData: StatusData = {
   state: 'success',
   description: 'Everything is alright', // TODO: Config
+  targetUrl: none
 }
 
 export = (app: Application) => {
@@ -61,7 +63,14 @@ export = (app: Application) => {
     const data: StatusData = m.fold(successData, msg => {
       context.log(`Title of pull request #${pr.number} doesn't match configuration: ${msg}`, config)
 
-      return { state: 'error', description: msg }
+      const repoInfo = context.repo({})
+      const htmlUrl = `https://github.com/${repoInfo.owner}/${repoInfo.repo}/tree/${pr.base.ref}/.github/pr-naming.json`
+
+      return {
+        state: 'error',
+        description: msg.substring(0, 140),
+        targetUrl: some(htmlUrl)
+      }
     })
 
     await toggleState(context, pr.head.sha, data)
@@ -82,6 +91,7 @@ function toggleState(bot: Context, sha: string, data: StatusData): Promise<void>
           bot.repo({
             sha: sha,
             context: StatusContext,
+            target_url: data.targetUrl.toUndefined(),
             ...data,
           }),
         )
