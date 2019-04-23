@@ -57,7 +57,7 @@ export = (app: Application) => {
     const m = c.match(pr.title, config)
 
     if (m.isNone()) {
-      context.log(`Title of pull request #${pr.number} match configuration`)
+      return context.log(`Title of pull request #${pr.number} match configuration`)
     }
 
     const data: StatusData = m.fold(successData, msg => {
