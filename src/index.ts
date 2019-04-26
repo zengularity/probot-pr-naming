@@ -52,28 +52,54 @@ export = (app: Application) => {
 
     const config = await c.getConfig(context, pr.base.ref)
 
-    context.log('config', config)
+    context.log.debug('config', config)
 
     const m = c.match(pr.title, config)
+    const st = await getCommitState(context, pr.head.sha, StatusContext)
 
-    if (m.isNone()) {
-      context.log(`Title of pull request #${pr.number} match configuration`)
-    }
+    const toggle: () => Promise<void> = m.fold(
+      () => {
+        context.log(`Title of pull request #${pr.number} match configuration`)
 
-    const data: StatusData = m.fold(successData, msg => {
-      context.log(`Title of pull request #${pr.number} doesn't match configuration: ${msg}`, config)
+        // TODO: Config to always set 'success' (false by default)
 
-      const repoInfo = context.repo({})
-      const htmlUrl = `https://github.com/${repoInfo.owner}/${repoInfo.repo}/tree/${pr.base.ref}/.github/pr-naming.json`
+        return st.exists(s => s != 'success')
+          ? context.github.repos
+              .createStatus(
+                context.repo({
+                  sha: pr.head.sha,
+                  context: StatusContext,
+                  ...successData,
+                }),
+              )
+              .then(_r => Promise.resolve())
+          : Promise.resolve()
+      },
+      msg => () => {
+        context.log(`Title of pull request #${pr.number} doesn't match configuration: ${msg}`, config)
 
-      return {
-        state: 'error',
-        description: msg.substring(0, 140),
-        targetUrl: some(htmlUrl),
-      }
-    })
+        const repoInfo = context.repo({})
+        const htmlUrl = `https://github.com/${repoInfo.owner}/${repoInfo.repo}/tree/${
+          pr.base.ref
+        }/.github/pr-naming.json`
 
-    await toggleState(context, pr.head.sha, data)
+        return st.exists(s => s == 'error')
+          ? Promise.resolve()
+          : context.github.repos
+              .createStatus(
+                context.repo({
+                  sha: pr.head.sha,
+                  context: StatusContext,
+                  state: 'error',
+                  description: msg.substring(0, 140),
+                  targetUrl: some(htmlUrl),
+                }),
+              )
+              .then(_r => Promise.resolve())
+      },
+    )
+
+    await toggle()
   })
 }
 
