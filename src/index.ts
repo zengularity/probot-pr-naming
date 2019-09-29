@@ -54,6 +54,8 @@ export = (app: Application) => {
 
     context.log.debug('config', config)
 
+    // TODO: Add report as comment (e.g. that pr.title.strip != pr.title)
+
     const m = c.match(pr.title, config)
     const st = await getCommitState(context, pr.head.sha, StatusContext)
 
