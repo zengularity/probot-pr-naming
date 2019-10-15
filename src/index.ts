@@ -81,9 +81,7 @@ export = (app: Application) => {
         context.log(`Title of pull request #${pr.number} doesn't match configuration: ${msg}`, config)
 
         const repoInfo = context.repo({})
-        const htmlUrl = `https://github.com/${repoInfo.owner}/${repoInfo.repo}/tree/${
-          pr.base.ref
-        }/.github/pr-naming.json`
+        const htmlUrl = `https://github.com/${repoInfo.owner}/${repoInfo.repo}/tree/${pr.base.ref}/.github/pr-naming.json`
 
         return st.exists(s => s == 'error')
           ? Promise.resolve()
