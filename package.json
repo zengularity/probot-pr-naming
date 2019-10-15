@@ -1,6 +1,6 @@
 {
   "name": "pr-naming",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "Probot application that check the naming of pull requests",
   "author": "cchantep (https://github.com/zengularity/probot-pr-naming)",
   "license": "ISC",
