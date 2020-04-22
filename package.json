@@ -38,10 +38,11 @@
     "ts-jest": "^24.0.0",
     "typescript": "^3.3.1",
     "typescript-eslint-parser": "^22.0.0",
-    "prettier": "1.19.1"
+    "prettier": "2.0.5",
+    "jest-junit": "10.0.0"
   },
   "engines": {
-    "node": ">= 8.3.0"
+    "node": ">= 10.13.0"
   },
   "jest": {
     "testEnvironment": "node"

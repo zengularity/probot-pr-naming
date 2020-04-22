@@ -57,7 +57,7 @@ type Enc =
 function getFromJson(bot: Context, path: string, ref: string): Promise<{}> {
   bot.log(`getContent(${path} @ ${ref})`)
 
-  return gh.getContent(bot, path, ref).then(resp => {
+  return gh.getContent(bot, path, ref).then((resp) => {
     const buff = Buffer.from(resp.data.content, resp.data.encoding as Enc)
 
     return JSON.parse(buff.toString('ascii'))
@@ -66,8 +66,8 @@ function getFromJson(bot: Context, path: string, ref: string): Promise<{}> {
 
 export function getConfig(bot: Context, ref: string): Promise<IConfig> {
   return getFromJson(bot, '.github/pr-naming.json', ref).then(
-    json => util.fromEither(Config.decode(json)),
-    _err => DefaultConfig,
+    (json) => util.fromEither(Config.decode(json)),
+    (_err) => DefaultConfig,
   )
 }
 
@@ -83,7 +83,7 @@ export function match(input: string, config: IConfig): Option<string> {
     ? (config.mustMatch as Array<string>)
     : [config.mustMatch.toString()]
 
-  const matchIdx = mustMatch.findIndex(re => !!input.match(re))
+  const matchIdx = mustMatch.findIndex((re) => !!input.match(re))
 
   if (matchIdx < 0) {
     return some(`must match ${mustMatch.join(', ')}`)
@@ -97,7 +97,7 @@ export function match(input: string, config: IConfig): Option<string> {
     ? (config.mustNotMatch as Array<string>)
     : [config.mustNotMatch.toString()]
 
-  const notIdx = mustNotMatch.findIndex(re => !!input.match(re))
+  const notIdx = mustNotMatch.findIndex((re) => !!input.match(re))
 
   return notIdx < 0 ? none : some(`must not match ${mustNotMatch.join(', ')}`)
 }

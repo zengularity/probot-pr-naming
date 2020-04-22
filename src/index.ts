@@ -44,7 +44,7 @@ const successData: StatusData = {
 }
 
 export = (app: Application) => {
-  app.on(['pull_request.opened', 'pull_request.edited', 'pull_request.synchronize'], async context => {
+  app.on(['pull_request.opened', 'pull_request.edited', 'pull_request.synchronize'], async (context) => {
     const event = await fromEither(PullRequestEvent.decode(context.payload))
     const pr = event.pull_request
 
@@ -65,7 +65,7 @@ export = (app: Application) => {
 
         // TODO: Config to always set 'success' (false by default)
 
-        return st.exists(s => s != 'success')
+        return st.exists((s) => s != 'success')
           ? context.github.repos
               .createStatus(
                 context.repo({
@@ -74,16 +74,16 @@ export = (app: Application) => {
                   ...successData,
                 }),
               )
-              .then(_r => Promise.resolve())
+              .then((_r) => Promise.resolve())
           : Promise.resolve()
       },
-      msg => () => {
+      (msg) => () => {
         context.log(`Title of pull request #${pr.number} doesn't match configuration: ${msg}`, config)
 
         const repoInfo = context.repo({})
         const htmlUrl = `https://github.com/${repoInfo.owner}/${repoInfo.repo}/tree/${pr.base.ref}/.github/pr-naming.json`
 
-        return st.exists(s => s == 'error')
+        return st.exists((s) => s == 'error')
           ? Promise.resolve()
           : context.github.repos
               .createStatus(
@@ -95,7 +95,7 @@ export = (app: Application) => {
                   targetUrl: some(htmlUrl),
                 }),
               )
-              .then(_r => Promise.resolve())
+              .then((_r) => Promise.resolve())
       },
     )
 
@@ -106,8 +106,8 @@ export = (app: Application) => {
 // --- GitHub integration
 
 function toggleState(bot: Context, sha: string, data: StatusData): Promise<void> {
-  return getCommitState(bot, sha, StatusContext).then(state => {
-    const alreadySet = state.filter(s => s == data.state)
+  return getCommitState(bot, sha, StatusContext).then((state) => {
+    const alreadySet = state.filter((s) => s == data.state)
 
     if (!alreadySet) {
       return Promise.resolve()
@@ -121,14 +121,14 @@ function toggleState(bot: Context, sha: string, data: StatusData): Promise<void>
             ...data,
           }),
         )
-        .then(_r => Promise.resolve())
+        .then((_r) => Promise.resolve())
     }
   })
 }
 
 function getCommitState(bot: Context, ref: string, ctx: string): Promise<Option<string>> {
-  return bot.github.repos.listStatusesForRef(bot.repo({ ref })).then(resp => {
-    const found = resp.data.find(s => s.context == ctx)
+  return bot.github.repos.listStatusesForRef(bot.repo({ ref })).then((resp) => {
+    const found = resp.data.find((s) => s.context == ctx)
 
     if (!found) {
       return Promise.resolve(none)

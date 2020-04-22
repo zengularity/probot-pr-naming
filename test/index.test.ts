@@ -23,7 +23,7 @@ describe('My Probot app', () => {
     app.app = () => 'test'
   })
 
-  test('TODO', async done => {
+  test('TODO', async (done) => {
     done()
   })
 })

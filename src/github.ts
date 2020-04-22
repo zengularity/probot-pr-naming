@@ -7,7 +7,7 @@ import * as util from './util'
 export function getContent(bot: Context, path: string, ref: string): Promise<IGetContentResponse> {
   return bot.github.repos
     .getContents(bot.repo({ path, ref }))
-    .then(payload => util.fromEither(GetContentResponse.decode(payload)))
+    .then((payload) => util.fromEither(GetContentResponse.decode(payload)))
 }
 
 // --- Model
