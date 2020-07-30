@@ -50,7 +50,7 @@ export = (app: Application) => {
 
     context.log(`Updated pull request #${pr.number}`, pr)
 
-    const config = await c.getConfig(context, pr.base.ref)
+    const config = await c.getConfig(context, pr.head.sha)
 
     context.log.debug('config', config)
 
