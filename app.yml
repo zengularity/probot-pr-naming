@@ -17,7 +17,7 @@ default_permissions:
 name: pr-naming
 
 # The homepage of your GitHub App.
-url: https://github.com/zengularity/probot-pr-naming
+url: https://github.com/faberNovel/probot-pr-naming
 
 # A description of the GitHub App.
 description: Probot application that check the naming of pull requests
