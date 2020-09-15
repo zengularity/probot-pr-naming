@@ -15,7 +15,7 @@ npm run build
 npm start
 ```
 
-[![CircleCI](https://circleci.com/gh/zengularity/probot-pr-naming.svg?style=svg)](https://circleci.com/gh/zengularity/probot-pr-naming)
+[![CircleCI](https://circleci.com/gh/faberNovel/probot-pr-naming.svg?style=svg)](https://circleci.com/gh/faberNovel/probot-pr-naming)
 
 ## Configuration
 
@@ -43,7 +43,7 @@ jobs:
   check_pr_naming:
     runs-on: ubuntu-latest
     steps:
-      - uses: zengularity/probot-pr-naming@ghaction-1.0.x
+      - uses: faberNovel/probot-pr-naming@ghaction-1.0.x
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -61,4 +61,4 @@ For more, check out the [Contributing Guide](CONTRIBUTING.md).
 
 ## License
 
-[ISC](LICENSE) © 2019 Zengularity (https://github.com/zengularity/probot-pr-naming)
+[ISC](LICENSE) © 2019 Fabernovel (https://github.com/faberNovel/probot-pr-naming)
